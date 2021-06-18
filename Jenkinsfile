@@ -1,17 +1,17 @@
 pipeline {
     
-	agent any
-/*	
-	tools {
-        maven "maven3"
+    agent any
+	
+    tools {
+        maven "maven"
     }
-*/	
+	
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "172.31.29.165:8081"
         NEXUS_REPOSITORY = "vprofile-release"
-	NEXUS_REPO_ID    = "vprofile-release"
+	NEXUS_REPOGRP_ID    = "vprofile-grp-repo"
         NEXUS_CREDENTIAL_ID = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}"
     }
@@ -55,9 +55,9 @@ pipeline {
 
         stage('CODE ANALYSIS with SONARQUBE') {
           
-		  environment {
-             scannerHome = tool 'sonarscanner4'
-          }
+	  environment {
+                  scannerHome = tool 'sonarscanner4'
+             }
 
           steps {
             withSonarQubeEnv('sonar-pro') {
@@ -91,7 +91,7 @@ pipeline {
                             nexusVersion: NEXUS_VERSION,
                             protocol: NEXUS_PROTOCOL,
                             nexusUrl: NEXUS_URL,
-                            groupId: pom.groupId,
+                            groupId: NEXUS_REPOGRP_ID,
                             version: ARTVERSION,
                             repository: NEXUS_REPOSITORY,
                             credentialsId: NEXUS_CREDENTIAL_ID,
@@ -113,9 +113,9 @@ pipeline {
                 }
             }
         }
-	stage('Deploy to Tomcat') {
+	 stage('Deploy to Tomcat') {
             steps {
-                 deploy adapters: [tomcat8(credentialsId: 'nexuslogin', path: '', url: 'http;//172.31.61.227:8081')], contextPath: null, war: 'war'
+                deploy adapters: [tomcat8(credentialsId: 'nexuslogin', path: '', url: 'http://172.31.61.227:8080')], contextPath: null, war: '**/*.war'
             }
         }
 
