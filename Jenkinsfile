@@ -113,9 +113,9 @@ pipeline {
                 }
             }
         }
-	 stage('Deploy to Tomcat') {
-             steps {
-                 deploy adapters: [tomcat8(credentialsId: 'nexuslogin', path: '', url: 'http://172.31.61.227:8080')], contextPath: null, war: '**/*.war'
+	stage('Deploy to Tomcat') {
+            steps {
+                 deploy adapters: [tomcat8(credentialsId: 'nexuslogin', path: '', url: 'http;//172.31.61.227:8081')], contextPath: null, war: 'war'
             }
         }
 
